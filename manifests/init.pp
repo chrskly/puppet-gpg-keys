@@ -12,7 +12,7 @@
 #
 
 class gpg-keys {
-    package { 'gpg' :
+    package { 'gnupg' :
         ensure => installed,
     }
 }
