@@ -16,25 +16,36 @@
 #
 #  You can optionally specify user + group to override the defaults of 'ubuntu'
 
-define public ($keyname = undef, $keyfile = undef, $user = "ubuntu", $group = "ubuntu") {
+define gpg-keys::public ($keyname = undef, $keyfile = undef, $user = "ubuntu", $group = "ubuntu") {
 
-    require => gpg-keys
+    include gpg-keys
 
     # Put the public key file into a user-private dir
-    file { '/home/$user/.puppet-gpg-keys/$keyfile' :
-        ensure => file,
+    file { "/home/$user/.puppet-gpg-keys/" :
+        ensure => directory,
         owner  => $user,
         group  => $group,
         mode   => 0600,
     }
+    file { "/home/$user/.puppet-gpg-keys/$keyfile" :
+        ensure => file,
+        owner  => $user,
+        group  => $group,
+        mode   => 0600,
+        source => "puppet:///modules/gpg-keys/$keyfile",
+    }
 
     # Import the key into the keychain
-    exec { 'gpg-keys-public-import-$keyfile' :
-        require => File['/home/$user/.puppet-gpg-keys/$keyfile'],
-        command => "gpg --import /tmp/$fkeyfile",
+    #exec { "gpg-keys-public-import-$keyfile" :
+    exec { "gpg --import /home/$user/.puppet-gpg-keys/$keyfile" :
+        require => [
+            File["/home/$user/.puppet-gpg-keys/$keyfile"],
+            Package["gnupg"]
+        ],
+        user    => $user,
         path    => "/usr/bin",
         # ... but only if we don't already have it
-        unless  => "gpg --list-keys $keyname",
+        unless  => "gpg --list-keys $keyname >/dev/null 2>&1",
     }
 
 }
