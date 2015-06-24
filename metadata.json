@@ -1,0 +1,12 @@
+{
+  "name": "gpg-keys",
+  "version": "0.1.0",
+  "author": "chrskly",
+  "summary": "Deploy GPG keys.",
+  "license": "None",
+  "source": "https://github.com/chrskly/puppet-gpg-keys.git",
+  "project_page": "https://github.com/chrskly/puppet-gpg-keys.git",
+  "issues_url": null,
+  "dependencies": [ ]
+}
+
