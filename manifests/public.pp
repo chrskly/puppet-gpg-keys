@@ -21,31 +21,30 @@ define gpg-keys::public ($keyname = undef, $keyfile = undef, $user = "ubuntu", $
     include gpg-keys
 
     # Put the public key file into a user-private dir
-    file { "/home/$user/.puppet-gpg-keys/" :
+    file { "/home/${user}/.puppet-gpg-keys/" :
         ensure => directory,
         owner  => $user,
         group  => $group,
-        mode   => 0600,
+        mode   => '0600',
     }
-    file { "/home/$user/.puppet-gpg-keys/$keyfile" :
+    file { "/home/${user}/.puppet-gpg-keys/${keyfile}" :
         ensure => file,
         owner  => $user,
         group  => $group,
-        mode   => 0600,
-        source => "puppet:///modules/gpg-keys/$keyfile",
+        mode   => '0600',
+        source => "puppet:///modules/gpg-keys/${keyfile}",
     }
 
     # Import the key into the keychain
-    #exec { "gpg-keys-public-import-$keyfile" :
-    exec { "gpg --import /home/$user/.puppet-gpg-keys/$keyfile" :
+    exec { "gpg --import /home/${user}/.puppet-gpg-keys/${keyfile}" :
         require => [
-            File["/home/$user/.puppet-gpg-keys/$keyfile"],
-            Package["gnupg"]
+            File["/home/${user}/.puppet-gpg-keys/${keyfile}"],
+            Package['gnupg']
         ],
         user    => $user,
-        path    => "/usr/bin",
+        path    => '/usr/bin',
         # ... but only if we don't already have it
-        unless  => "gpg --list-keys $keyname >/dev/null 2>&1",
+        unless  => "gpg --list-keys ${keyname} >/dev/null 2>&1",
     }
 
 }
