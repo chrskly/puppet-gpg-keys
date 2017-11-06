@@ -11,8 +11,13 @@
 # == Sample Usage:
 #
 
-class gpg-keys {
-    package { 'gnupg' :
+class gpg_keys {
+	#is it version2 that use libgcrypt. we have some probleswith it
+	package { 'gnupg':
+      ensure => 'absent',
+    }
+    #we want version1
+    package { 'gnupg1' :
         ensure => installed,
     }
 }

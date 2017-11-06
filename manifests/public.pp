@@ -16,9 +16,14 @@
 #
 #  You can optionally specify user + group to override the defaults of 'ubuntu'
 
-define gpg-keys::public ($keyname = undef, $keyfile = undef, $user = "ubuntu", $group = "ubuntu") {
+define gpg_keys::public (
+    $keyname = undef, 
+    $keyfile = undef, 
+    $user    = 'noc', 
+    $group   = 'noc',
+) {
 
-    include gpg-keys
+    include gpg_keys
 
     # Put the public key file into a user-private dir
     file { "/home/${user}/.puppet-gpg-keys/" :
