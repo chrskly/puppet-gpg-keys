@@ -29,36 +29,36 @@ define gpg_keys::public (
 
     # Put the public key file into a user-private dir
    
-    file { "/home/${user}/.gnupg/${keyfile}" :
+    file { "/home/${user}/${keyfile}" :
         ensure => file,
         owner  => $user,
         group  => $group,
         mode   => '0600',
-        source => "puppet:///modules/gpg-keys/${keyfile}",
+        source => "puppet:///modules/gpg_keys/${keyfile}",
     }->
-    file { "/home/${user}/.gnupg/${trustfile}" :
+    file { "/home/${user}/${trustfile}" :
         ensure => file,
         owner  => $user,
         group  => $group,
         mode   => '0600',
-        source => "puppet:///modules/gpg-keys/${trustfile}",
+        source => "puppet:///modules/gpg_keys/${trustfile}",
     }
     # Import the key into the keychain
-    exec { "gpg --no-secmem-warning --batch --yes --import /home/${user}/.gnupg/${keyfile}" :
+    exec { "gpg --no-secmem-warning --batch --yes --import /home/${user}/${keyfile}" :
         user    => $user,
-        path    => '/usr/bin',
+        path    => '/usr/bin:/usr/local/bin',
         require => [
-            File["/home/${user}/.gnupg/${keyfile}"],
+            File["/home/${user}/${keyfile}"],
             Package['gnupg1']
         ],
         # ... but only if we don't already have it
         unless  => "gpg --list-keys ${keyname} >/dev/null 2>&1",
     }
-    exec { "gpg --no-secmem-warning --batch --yes --import-ownertrust /home/${user}/.gnupg/${trustfile}" :
+    exec { "gpg --no-secmem-warning --batch --yes --import-ownertrust /home/${user}/${trustfile}" :
         user    => $user,
-        path    => '/usr/bin',
+        path    => '/usr/bin:/usr/local/bin',
         require => [
-            File["/home/${user}/.gnupg/${trustfile}"],
+            File["/home/${user}/${trustfile}"],
             Package['gnupg1']
         ],
         # ... but only if we don't already have it
